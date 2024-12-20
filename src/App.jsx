@@ -1,8 +1,8 @@
 // import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
-import Navbar from '../src/components/header/navbar';
-import Footer from '../src/components/Footer/Footer';
+import Navbar from '@components/header/navbar';
+import Footer from '@components/Footer/Footer'';
 import { Outlet } from 'react-router-dom';
 
 function App() {
