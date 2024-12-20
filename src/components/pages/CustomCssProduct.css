@@ -1,0 +1,41 @@
+/* custom-styles.css */
+body {
+    background-color: #f5f5f5;
+}
+
+.carousel-inner img {
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+h1.display-5 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+h2.text-danger {
+    font-size: 1.5rem;
+    margin-top: 0.5rem;
+}
+
+.lead {
+    font-size: 1rem;
+    color: #666;
+}
+
+button.btn-warning {
+    background-color: #ffa41c;
+    border: none;
+    font-size: 1.2rem;
+}
+
+button.btn-warning:hover {
+    background-color: #f78b1f;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+}

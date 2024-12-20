@@ -1,0 +1,12 @@
+.footer a:hover {
+    text-decoration: underline;
+}
+
+.footer a {
+    text-decoration: none;
+}
+
+.footer {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}

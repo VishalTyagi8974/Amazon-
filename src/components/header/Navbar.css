@@ -1,0 +1,10 @@
+#firstNav {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    /* Ensures navbar is above all other content */
+    background-color: #131921;
+    /* Maintain the desired background color */
+}

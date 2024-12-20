@@ -1,0 +1,57 @@
+.scroll-container {
+    overflow-x: auto;
+    white-space: nowrap;
+    flex-grow: 1;
+    scroll-behavior: smooth;
+    /* Smooth scroll */
+    -ms-overflow-style: none;
+    /* Hide scrollbar in IE and Edge */
+    scrollbar-width: none;
+    /* Hide scrollbar in Firefox */
+}
+
+.scroll-container::-webkit-scrollbar {
+    display: none;
+    /* Hide scrollbar in Chrome, Safari, and Opera */
+}
+
+.scroll-container-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    /* Hide overflow */
+}
+
+.scroll-container .navbar-nav {
+    flex-wrap: nowrap;
+}
+
+.scroll-container .nav-item {
+    display: inline-block;
+}
+
+.scroll-button {
+    background-color: #232f3e;
+    border: none;
+    color: white;
+    font-size: 24px;
+    padding: 10px;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+}
+
+.scroll-button.left {
+    left: 0;
+}
+
+.scroll-button.right {
+    right: 0;
+}
+
+.scroll-button:focus {
+    outline: none;
+}
