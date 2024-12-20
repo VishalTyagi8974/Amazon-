@@ -1,0 +1,6 @@
+{
+    "alias": {
+        "@components": "./src/components",
+        "@utils": "./utils"
+    }
+}
