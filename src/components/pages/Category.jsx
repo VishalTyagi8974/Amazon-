@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import AlertMessage from "../AlertMessage";
 import ProductCard from "../ProductCard";
@@ -11,16 +11,24 @@ export default function Category() {
     const [products, setProducts] = useState([]);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(true); // Loading state for spinner
+    const [currentPage, setCurrentPage] = useState(1); // State for current page
+    const [totalPages, setTotalPages] = useState(1); // State for total pages
+
+    const pageSize = 10; // Number of products per page
 
     useEffect(() => {
         const controller = new AbortController(); // Create an AbortController instance
         const signal = controller.signal; // Get the signal from the AbortController
-        // Function to fetch products with category
+        // Function to fetch products with category and pagination
         const fetchProducts = async () => {
             try {
                 setLoading(true); // Start loading
-                const response = await getProductsWithCategory({ signal, params: { category } }); // Pass the signal to the request
+                const response = await getProductsWithCategory({ 
+                    signal, 
+                    params: { category, page: currentPage, limit: pageSize } // Pass current page and page size
+                });
                 setProducts(response.products);
+                setTotalPages(Math.ceil(response.totalCount / pageSize)); // Calculate total pages based on total count and page size
                 setLoading(false); // Stop loading
             } catch (error) {
                 setLoading(false); // Stop loading
@@ -37,7 +45,13 @@ export default function Category() {
         return () => {
             controller.abort();
         };
-    }, [category]); // Dependency array with category to re-run effect when category changes
+    }, [category, currentPage]); // Dependency array with category and currentPage to re-run effect when they change
+
+    const handlePageChange = (newPage) => {
+        if (newPage >= 1 && newPage <= totalPages) {
+            setCurrentPage(newPage); // Update current page state
+        }
+    };
 
     return (
         <div className="container my-4">
@@ -76,8 +90,28 @@ export default function Category() {
                             </Link>
                         ))}
                     </div>
+
+                    {/* Pagination Controls */}
+                    <div className="d-flex justify-content-center mt-4">
+                        <button
+                            className="btn btn-outline-dark mx-2"
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 1}
+                        >
+                            Previous
+                        </button>
+                        <span>Page {currentPage} of {totalPages}</span>
+                        <button
+                            className="btn btn-outline-dark mx-2"
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                        >
+                            Next
+                        </button>
+                    </div>
                 </>
             )}
         </div>
-    )
+    );
 }
+
