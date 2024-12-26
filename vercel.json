@@ -1,3 +1,9 @@
 {
-  "alias": "my-amazon-project" 
+  "alias": "my-amazon-project" ,
+  "rewrites": [
+    {
+      "source": "/:path*",
+      "destination": "/index.html"
+    }
+  ]
 }
