@@ -11,16 +11,23 @@ export default function SearchProducts() {
     const [searchParams] = useSearchParams();
     const queries = useMemo(() => Object.fromEntries(searchParams.entries()), [searchParams]);
     const navigate = useNavigate();
+    
+    // State to manage products, error, loading, and pagination
     const [products, setProducts] = useState([]);
     const [error, setError] = useState("");
-    const [loading, setLoading] = useState(true); // Loading state for spinner
+    const [loading, setLoading] = useState(true);
+    const [pagination, setPagination] = useState({ currentPage: 1, totalPages: 1 });
 
     useEffect(() => {
         if (queries.query) {
             setLoading(true); // Start loading
-            getProductsOnSearch({ queries })
+            getProductsOnSearch({ queries: { ...queries, page: pagination.currentPage, limit: 10 } })
                 .then(response => {
                     setProducts(response.products);
+                    setPagination({
+                        currentPage: response.pagination.currentPage,
+                        totalPages: response.pagination.totalPages
+                    });
                     setLoading(false); // Stop loading
                 })
                 .catch(err => {
@@ -28,11 +35,17 @@ export default function SearchProducts() {
                     setError(err.message || "Something Went Wrong!");
                 });
         }
-    }, [JSON.stringify(queries)]);
+    }, [JSON.stringify(queries), pagination.currentPage]); // Dependency on pagination.currentPage
+
+    const handlePageChange = (newPage) => {
+        if (newPage > 0 && newPage <= pagination.totalPages) {
+            setPagination((prev) => ({ ...prev, currentPage: newPage }));
+        }
+    };
 
     return (
         <div className="container my-4">
-            {error && <AlertMessage message={error} alertType="danger" />} {/* Show error alert if there's an error */}
+            {error && <AlertMessage message={error} alertType="danger" />}
             {loading ? (
                 <Spinner /> // Show spinner while data is loading
             ) : (
@@ -74,6 +87,27 @@ export default function SearchProducts() {
                         ) : (
                             <p>No products found for "{queries.query}"</p>
                         )}
+                    </div>
+
+                    {/* Pagination Buttons */}
+                    <div className="d-flex justify-content-between mt-4">
+                        <button
+                            className="btn btn-secondary"
+                            onClick={() => handlePageChange(pagination.currentPage - 1)}
+                            disabled={pagination.currentPage === 1}
+                        >
+                            Previous
+                        </button>
+                        <div>
+                            <span>Page {pagination.currentPage} of {pagination.totalPages}</span>
+                        </div>
+                        <button
+                            className="btn btn-secondary"
+                            onClick={() => handlePageChange(pagination.currentPage + 1)}
+                            disabled={pagination.currentPage === pagination.totalPages}
+                        >
+                            Next
+                        </button>
                     </div>
                 </>
             )}
