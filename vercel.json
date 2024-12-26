@@ -1,6 +1,3 @@
 {
-    "alias": {
-        "@components": "./src/components",
-        "@utils": "./utils"
-    }
+  "alias": "my-amazon-project" 
 }
