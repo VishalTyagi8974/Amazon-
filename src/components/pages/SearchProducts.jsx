@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import AlertMessage from "../AlertMessage";
 import ProductCard from "../ProductCard";
 import Filter from "../Filter";
-import getProductsWithSearch from "../../../utils/getProductsWithSearch"; // Assuming this utility handles search logic
+import getProductsOnSearch from "../../../utils/getProductsOnSearch"; // Assuming this utility handles search logic
 import Spinner from "../Spinner"; // Importing spinner for loading state
 
 export default function SearchedPage() {
@@ -16,7 +16,7 @@ export default function SearchedPage() {
     const [currentPage, setCurrentPage] = useState(1); // State for current page
     const [totalPages, setTotalPages] = useState(1); // State for total pages
 
-    const pageSize = 10; // Number of products per page
+    const pageSize = 7; // Number of products per page
 
     useEffect(() => {
         const controller = new AbortController(); // Create an AbortController instance
@@ -26,7 +26,7 @@ export default function SearchedPage() {
         const fetchProducts = async () => {
             try {
                 setLoading(true); // Start loading
-                const response = await getProductsWithSearch({
+                const response = await getProductsOnSearch({
                     signal,
                     params: {
                         query: searchQuery,
