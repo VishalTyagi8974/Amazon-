@@ -12,7 +12,6 @@ import { useSelector, useDispatch } from "react-redux";
 import ReviewComponent from "../ReviewComponent";
 import { getUserData } from "../../../utils/userFunctions";
 import ConfirmationModal from "../ConfirmationModal";
-
 export default function ProductInfo() {
     const isUser = useSelector((state) => state.auth.token); // Check if user is logged in
     const dispatch = useDispatch(); // For dispatching Redux actions
@@ -39,7 +38,6 @@ export default function ProductInfo() {
     const deleteProduct = async () => {
         setLoading(true);
         try {
-
             await axios.delete(`${conf.baseUrl}/products`, {
                 data: {
                     prodId,
@@ -82,7 +80,7 @@ export default function ProductInfo() {
                 const response = await getUserData();
                 setUser(response.userData);
             } catch (err) {
-                // console.error(err);
+                console.error(err);
                 setError(err.message || "Failed to fetch user data");
             }
         };
@@ -95,7 +93,6 @@ export default function ProductInfo() {
             {loading ? (
                 <Spinner /> // Show spinner while data is loading
             ) : (
-
                 <div className="row">
                     <div className="col-md-6">
                         <ProductImages images={product.images} />
@@ -108,7 +105,7 @@ export default function ProductInfo() {
                             <strong>Category:</strong> {product.category}
                         </p>
                         <p>
-                            <strong>Seller:</strong> {seller.username}
+                            <strong>Seller:</strong> {seller ? seller.username : "Loading..."}
                         </p>
 
                         <Button
