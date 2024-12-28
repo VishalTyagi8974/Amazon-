@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import getProductsWithCategory from "../../utils/getProductsWithCategory";
 
 
-export default function Filter({ setProducts }) {
+export default function Filter({ setProducts, page, category }) {
     const [categories, setCategories] = useState([]);
     const { register, handleSubmit, formState: { errors } } = useForm();
 
@@ -26,7 +26,9 @@ export default function Filter({ setProducts }) {
             params: {
                 category: data.category,
                 pricing: data.pricing,
-                rating: data.rating
+                rating: data.rating,
+                page
+
             }
         })
             .then((response) => {
@@ -61,7 +63,7 @@ export default function Filter({ setProducts }) {
                 <div className="offcanvas-body">
                     <form action="" onSubmit={handleSubmit(handleFilterSubmit)}>
                         <FilterSelect {...register("pricing")} className="mb-3" label="Pricing" options={["Default", "Low-High", "High-Low"]} />
-                        <FilterSelect {...register("category")} className="mb-3" label="Category" options={categories} />
+                        <FilterSelect {...register("category")} className="mb-3" label="Category" options={categories} category={category} />
                         <FilterSelect {...register("rating")} label="Rating" options={["Default", "High-Low"]} />
                         <Button className="btn-success mt-3" type="submit">Filter</Button>
                     </form>
