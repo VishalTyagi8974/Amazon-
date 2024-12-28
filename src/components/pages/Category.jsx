@@ -11,11 +11,10 @@ export default function Category() {
     const [products, setProducts] = useState([]);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(true); // Loading state for spinner
-    const [currentPage, setCurrentPage] = useState(1); // State for current page
+    const [page, setPage] = useState(1); // State for current page
     const [totalPages, setTotalPages] = useState(1); // State for total pages
-    const [searchQuery, setSearchQuery] = useState(""); // State for search query
 
-    const pageSize = 10; // Number of products per page
+
 
     useEffect(() => {
         const controller = new AbortController(); // Create an AbortController instance
@@ -26,23 +25,16 @@ export default function Category() {
                 setLoading(true); // Start loading
                 const response = await getProductsWithCategory({
                     signal,
-                    params: {
-                        category,
-                        page: currentPage,
-                        limit: pageSize,
-                        search: searchQuery, // Pass search query for filtered results
-                    },
+                    params: { category, page } // Pass current page and page size
                 });
-
-                // Ensure totalCount is valid and calculate totalPages
-                const totalCount = response.totalCount || 0;
                 setProducts(response.products);
-                setTotalPages(Math.max(1, Math.ceil(totalCount / pageSize))); // Avoid NaN by using Math.max
+
+                setTotalPages(Math.ceil(response.totalPages)); // Calculate total pages based on total count and page size
                 setLoading(false); // Stop loading
             } catch (error) {
                 setLoading(false); // Stop loading
-                if (error.name === "AbortError") {
-                    console.log("Fetch aborted");
+                if (error.name === 'AbortError') {
+                    console.log('Fetch aborted');
                 } else {
                     setError(error?.message || "Something Went Wrong!");
                 }
@@ -50,22 +42,16 @@ export default function Category() {
         };
 
         fetchProducts();
-
-        // Cleanup function to abort the request if the component unmounts or if category/search changes
+        // Cleanup function to abort the request if the component unmounts or if category changes
         return () => {
             controller.abort();
         };
-    }, [category, currentPage, searchQuery]); // Re-run the effect when category, currentPage, or searchQuery changes
+    }, [category, page]); // Dependency array with category and currentPage to re-run effect when they change
 
     const handlePageChange = (newPage) => {
         if (newPage >= 1 && newPage <= totalPages) {
-            setCurrentPage(newPage); // Update current page state
+            setPage(newPage); // Update current page state
         }
-    };
-
-    const handleSearchChange = (event) => {
-        setSearchQuery(event.target.value); // Update search query state
-        setCurrentPage(1); // Reset to page 1 when the search query changes
     };
 
     return (
@@ -76,9 +62,7 @@ export default function Category() {
             ) : (
                 <>
                     <div className="d-flex justify-content-between w-100 p-3">
-                        <h2 className="responsiveH2">
-                            {products?.length ? products[0].category : category}
-                        </h2>
+                        <h2 className='responsiveH2'>{products?.length ? products[0].category : category}</h2>
                         <button
                             className="btn btn-black"
                             type="button"
@@ -99,25 +83,10 @@ export default function Category() {
                         </button>
                     </div>
 
-                    {/* Search bar */}
-                    <div className="mb-3">
-                        <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Search Products..."
-                            value={searchQuery}
-                            onChange={handleSearchChange} // Update search query on change
-                        />
-                    </div>
-
-                    <Filter setProducts={setProducts} />
+                    <Filter setProducts={setProducts} page={page} category={category} />
                     <div className="w-100">
                         {products?.map((prod) => (
-                            <Link
-                                className="text-decoration-none text-black"
-                                key={prod._id}
-                                to={`/products/${prod._id}`}
-                            >
+                            <Link className="text-decoration-none text-black" key={prod._id} to={`/products/${prod._id}`}>
                                 <ProductCard product={prod} />
                             </Link>
                         ))}
@@ -127,18 +96,16 @@ export default function Category() {
                     <div className="d-flex justify-content-center mt-4">
                         <button
                             className="btn btn-outline-dark mx-2"
-                            onClick={() => handlePageChange(currentPage - 1)}
-                            disabled={currentPage === 1}
+                            onClick={() => handlePageChange(page - 1)}
+                            disabled={page === 1}
                         >
                             Previous
                         </button>
-                        <span>
-                            Page {currentPage} of {totalPages}
-                        </span>
+                        <span>Page {page} of {totalPages}</span>
                         <button
                             className="btn btn-outline-dark mx-2"
-                            onClick={() => handlePageChange(currentPage + 1)}
-                            disabled={currentPage === totalPages}
+                            onClick={() => handlePageChange(page + 1)}
+                            disabled={page === totalPages}
                         >
                             Next
                         </button>
@@ -148,4 +115,3 @@ export default function Category() {
         </div>
     );
 }
-
