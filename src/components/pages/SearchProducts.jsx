@@ -33,6 +33,37 @@ export default function SearchProducts() {
             setLoading(true); // Start loading spinner
 
             getProductsOnSearch({
+                queries: { ...queries, page: 1 },
+            })
+                .then((response) => {
+                    if (response && response.products) {
+                        setProducts(response.products);
+                        setPagination({
+                            currentPage: response.currentPage,
+                            totalPages: response.totalPages,
+                        });
+                    } else {
+                        setProducts([]);
+                        setPagination({
+                            currentPage: 1,
+                            totalPages: 1,
+                        });
+                    }
+                    setLoading(false); // Stop loading spinner
+                })
+                .catch((err) => {
+                    setLoading(false); // Stop loading spinner
+                    setError(err.message || "Something Went Wrong!");
+                });
+        }
+    }, [JSON.stringify(queries)]);
+
+    useEffect(() => {
+        if (queries.query) {
+            setError(""); // Clear error state
+            setLoading(true); // Start loading spinner
+
+            getProductsOnSearch({
                 queries: { ...queries, page: pagination.currentPage },
             })
                 .then((response) => {
@@ -56,7 +87,7 @@ export default function SearchProducts() {
                     setError(err.message || "Something Went Wrong!");
                 });
         }
-    }, [JSON.stringify(queries), pagination.currentPage]);
+    }, [pagination.currentPage]);
 
     // Pagination button logic
     const handlePrevPage = () => {
@@ -154,3 +185,4 @@ export default function SearchProducts() {
         </div>
     );
 }
+
